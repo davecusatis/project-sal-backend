@@ -36,7 +36,9 @@ type TokenClaims struct {
 	jwt.StandardClaims
 }
 
-type MessageData struct{}
+type MessageData struct {
+	Score int `json:"score"`
+}
 
 type TwitchUserData struct {
 	ID          string `json:"id"`

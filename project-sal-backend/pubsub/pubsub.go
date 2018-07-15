@@ -27,7 +27,7 @@ func newPubsubMessageRequest(token *models.TokenData, data []byte) *http.Request
 		bytes.NewReader(data))
 
 	r.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token.Token))
-	r.Header.Add("Client-Id", "cm5nkhrq18yy02yy9tp108lx745vcx")
+	r.Header.Add("Client-Id", "6uwsgp1z9ymm816pyd0a7ga8zdir1n")
 	r.Header.Add("Content-Type", "application/json")
 	return r
 }

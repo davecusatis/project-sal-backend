@@ -18,7 +18,7 @@ type TwitchClient struct {
 // NewTwitchClient returns an instance of our Twitch client
 func NewTwitchClient(client *http.Client) *TwitchClient {
 	return &TwitchClient{
-		ClientID: "cm5nkhrq18yy02yy9tp108lx745vcx",
+		ClientID: "6uwsgp1z9ymm816pyd0a7ga8zdir1n",
 		Client:   client,
 	}
 }

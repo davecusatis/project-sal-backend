@@ -25,9 +25,10 @@ func NewServer(api *api.API) (*Server, error) {
 	mux := goji.NewMux()
 
 	mux.HandleFunc(pat.Post(apiBase+"/ping"), api.Ping)
+	mux.HandleFunc(pat.Post(apiBase+"/play"), api.Play)
 
 	return &Server{
-		Port: "80",
+		Port: "3030",
 		Mux:  mux,
 	}, nil
 }

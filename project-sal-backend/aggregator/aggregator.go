@@ -11,7 +11,7 @@ import (
 
 // Aggregator is a message aggregator as to not eat through pubsub rate limits
 type Aggregator struct {
-	MessageChan chan *models.SongRequestMessage
+	MessageChan chan *models.PubsubMessage
 	Ticker      *time.Ticker
 	Pubsub      *pubsub.PubsubClient
 }
@@ -21,7 +21,7 @@ func NewAggregator() *Aggregator {
 	ps := pubsub.NewPubsubClient(&http.Client{})
 
 	return &Aggregator{
-		MessageChan: make(chan *models.SongRequestMessage),
+		MessageChan: make(chan *models.PubsubMessage),
 		Ticker:      time.NewTicker(1 * time.Second),
 		Pubsub:      ps,
 	}
@@ -34,7 +34,7 @@ func (a *Aggregator) Start() {
 			select {
 			case <-a.Ticker.C:
 				msg := <-a.MessageChan
-				log.Printf("Got message: %v", msg)
+				log.Printf("Sending message: %v", msg)
 				a.Pubsub.SendPubsubBroadcastMessage(msg)
 			}
 		}
