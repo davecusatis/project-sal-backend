@@ -48,3 +48,9 @@ type TwitchUserData struct {
 type TwitchUserResponse struct {
 	Data []TwitchUserData `json:"data"`
 }
+
+type Score struct {
+	UserName   string `json:"user_name"`
+	Score      int    `json:"score"`
+	ScoreValue int    `json:"score_value"`
+}

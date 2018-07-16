@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/davecusatis/project-sal-backend/project-sal-backend/models"
+	"github.com/davecusatis/project-sal-backend/project-sal-backend/slotmachine"
 	"github.com/davecusatis/project-sal-backend/project-sal-backend/token"
 )
 
@@ -21,7 +22,7 @@ func (a *API) Play(w http.ResponseWriter, req *http.Request) {
 	a.Aggregator.MessageChan <- &models.PubsubMessage{
 		MessageType: "scoreUpdated",
 		Data: models.MessageData{
-			Score: 777,
+			Score: slotmachine.GenerateRandomScore(),
 		},
 		Token: token.CreateServerToken(tok),
 	}
