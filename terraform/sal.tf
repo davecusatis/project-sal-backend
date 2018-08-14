@@ -11,5 +11,8 @@ resource "aws_db_instance" "default" {
   instance_class    = "db.t2.micro"
   name              = "saldb"
   username          = "dave"
+  password          = "CorpseMaster6661992"
   port              = "5432"
+
+  skip_final_snapshot = true
 }
