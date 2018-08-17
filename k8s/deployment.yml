@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: project-sal
+  labels:
+    app: project-sal
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: project-sal
+    spec:
+      containers:
+      - name: project-sal
+        image: 319131104487.dkr.ecr.us-west-2.amazonaws.com/sal:${TAG}
+        command:
+        ports:
+          - containerPort: 3030
+        volumeMounts:
+          - name: project-sal
+            mountPath: /etc/project-sal/
+            readOnly: true
+      volumes:
+        - name: project-sal
+          configMap: { name: project-sal }
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: project-sal
+spec:
+  type: LoadBalancer
+  selector:
+    app: project-sal
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3030
