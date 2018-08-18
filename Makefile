@@ -10,7 +10,7 @@ test:
 	go test ./...
 
 build: install
-	go build -ldflags "-X main.version=$(TAG)" ./cmd/project-sal
+	GOOS=linux CGO_ENABLED=0 go build -ldflags "-X main.version=$(TAG)" ./cmd/project-sal
 
 serve: build
 	./project-sal
@@ -20,6 +20,7 @@ clean:
 
 pack:
 	GOOS=linux make build
+	CGO_ENABLED=0
 	sudo docker build -t sal:$(TAG) .
 	sudo docker tag sal:$(TAG) 319131104487.dkr.ecr.us-west-2.amazonaws.com/sal:$(TAG)
 

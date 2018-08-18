@@ -3,9 +3,7 @@ package datasource
 import (
 	"database/sql"
 	"fmt"
-	"log"
 
-	"github.com/davecusatis/project-sal-backend/project-sal-backend/config"
 	"github.com/davecusatis/project-sal-backend/project-sal-backend/models"
 
 	// import pq driver
@@ -20,23 +18,29 @@ type Datasource struct {
 
 // NewDatasource returns a new datasource instance
 func NewDatasource() *Datasource {
-	dbHost := config.MustGetConfigValue("DB_HOST")
-	dbUser := config.MustGetConfigValue("DB_USER")
-	dbPassword := config.MustGetConfigValue("DB_PASSWORD")
-	dbPort := config.MustGetConfigValue("DB_PORT")
-	dbName := config.MustGetConfigValue("DB_NAME")
-	connectionStr := fmt.Sprintf("host= %s user=%s dbname=%s password=%s port=%s sslmode=disable", dbHost, dbUser, dbName, dbPassword, dbPort)
-	db, err := sql.Open("postgres", connectionStr)
-	if err != nil {
-		log.Fatalf("Error creating database connection: %s", err)
-	}
+	// dbHost := config.MustGetConfigValue("DB_HOST")
+	// dbUser := config.MustGetConfigValue("DB_USER")
+	// dbPassword := config.MustGetConfigValue("DB_PASSWORD")
+	// dbPort := config.MustGetConfigValue("DB_PORT")
+	// dbName := config.MustGetConfigValue("DB_NAME")
 
-	err = db.Ping()
-	if err != nil {
-		log.Fatal("Error: Could not establish a connection with the database")
-	}
+	// dbHost := "DB_HOST"
+	// dbUser := "DB_USER"
+	// dbPassword := "DB_PASSWORD"
+	// dbPort := "DB_PORT"
+	// dbName := "DB_NAME"
+	// connectionStr := fmt.Sprintf("host= %s user=%s dbname=%s password=%s port=%s sslmode=disable", dbHost, dbUser, dbName, dbPassword, dbPort)
+	// db, err := sql.Open("postgres", connectionStr)
+	// if err != nil {
+	// 	log.Fatalf("Error creating database connection: %s", err)
+	// }
+
+	// err = db.Ping()
+	// if err != nil {
+	// 	log.Fatal("Error: Could not establish a connection with the database")
+	// }
 	return &Datasource{
-		db:         db,
+		db:         nil,
 		scoreTable: "scores",
 	}
 }
@@ -110,6 +114,4 @@ func (d *Datasource) RecordScore(newScore models.Score) error {
 	// 	log.Printf("Error recording score %#v: %s", newScore, err)
 	// 	return err
 	// }
-
-	return nil
 }
