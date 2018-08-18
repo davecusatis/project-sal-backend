@@ -13,10 +13,10 @@ build: install
 	go build -ldflags "-X main.version=$(TAG)" ./cmd/project-sal
 
 serve: build
-	./news
+	./project-sal
 
 clean:
-	rm ./news
+	rm ./project-sal
 
 pack:
 	GOOS=linux make build
@@ -27,6 +27,6 @@ upload:
 	AWS_PROFILE=sal-prod sudo docker push 319131104487.dkr.ecr.us-west-2.amazonaws.com/sal:$(TAG)
 
 deploy:
-	envsubst < k8s/deployment.yml | kubectl apply -f -
+	envsubst < kubernetes/deployment.yml | kubectl apply -f -
 
 ship: test pack upload deploy clean

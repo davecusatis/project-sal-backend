@@ -1,4 +1,4 @@
-apiVersion: apps/v1
+apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: project-sal
@@ -17,13 +17,13 @@ spec:
         command:
         ports:
           - containerPort: 3030
-        volumeMounts:
-          - name: project-sal
-            mountPath: /etc/project-sal/
-            readOnly: true
-      volumes:
-        - name: project-sal
-          configMap: { name: project-sal }
+        # volumeMounts:
+        #   - name: project-sal
+        #     mountPath: /etc/project-sal/
+        #     readOnly: true
+      # volumes:
+      #   - name: project-sal
+      #     configMap: { name: project-sal }
 ---
 kind: Service
 apiVersion: v1
