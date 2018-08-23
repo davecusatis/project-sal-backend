@@ -27,6 +27,7 @@ type PubsubPerms struct {
 	Send   []string `json:"send"`
 	Listen []string `json:"listen"`
 }
+
 type TokenClaims struct {
 	OpaqueUserID string      `json:"opaque_user_id"`
 	UserID       string      `json:"user_id"`
@@ -37,7 +38,7 @@ type TokenClaims struct {
 }
 
 type MessageData struct {
-	Score int `json:"score"`
+	Score Score `json:"score"`
 }
 
 type TwitchUserData struct {

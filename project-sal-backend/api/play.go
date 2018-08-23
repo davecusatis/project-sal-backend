@@ -19,10 +19,16 @@ func (a *API) Play(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	log.Printf("Got play request")
+	s := slotmachine.GenerateRandomScore()
+
+	// 1. Record score
+	// 2. Update clients
+	// 3. message in chat
+	a.Datasource.RecordScore(s)
 	a.Aggregator.MessageChan <- &models.PubsubMessage{
 		MessageType: "scoreUpdated",
 		Data: models.MessageData{
-			Score: slotmachine.GenerateRandomScore(),
+			Score: s,
 		},
 		Token: token.CreateServerToken(tok),
 	}
