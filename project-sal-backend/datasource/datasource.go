@@ -32,7 +32,7 @@ func NewDatasource() *Datasource {
 
 	err = db.Ping()
 	if err != nil {
-		log.Fatal("Error: Could not establish a connection with the database")
+		log.Fatalf("Error: Could not establish a connection with the database: %s", err)
 	}
 	log.Printf("Connected to Database")
 	return &Datasource{
@@ -43,15 +43,26 @@ func NewDatasource() *Datasource {
 
 func (d *Datasource) LeaderboardForChannelID(channelID string) ([]models.Score, error) {
 	query := fmt.Sprintf(`
-	SELECT (userId, score)
+	SELECT *
 	FROM ChannelScores
-	WHERE channelId = '%s' LIMIT 10`,
+	WHERE channelId = '%s'`,
 		channelID)
 
 	var scores []models.Score
-	err := d.db.QueryRow(query).Scan(&scores)
+	rows, err := d.db.Query(query)
 	if err != sql.ErrNoRows && err != nil {
 		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		log.Printf("ROW")
+		var id int
+		var score models.Score
+		err = rows.Scan(&id, &score)
+		if err != nil {
+			return nil, err
+		}
+		scores = append(scores, score)
 	}
 	return scores, nil
 }
@@ -63,9 +74,9 @@ func (d *Datasource) RecordScore(newScore models.Score) error {
 	VALUES ('%s', '%s', '%d', '%d')
 	RETURNING id`,
 		newScore.ChannelID,
-		newScore.UserName,
+		newScore.UserID,
 		newScore.Score,
-		newScore.ScoreValue)
+		newScore.BitsUsed)
 
 	var ID string
 	err := d.db.QueryRow(query).Scan(&ID)

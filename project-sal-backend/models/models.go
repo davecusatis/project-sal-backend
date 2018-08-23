@@ -51,8 +51,8 @@ type TwitchUserResponse struct {
 }
 
 type Score struct {
-	ChannelID  string `json:"channel_id"`
-	UserName   string `json:"user_name"`
-	Score      int    `json:"score"`
-	ScoreValue int    `json:"score_value"`
+	ChannelID string `json:"channelid"`
+	UserID    string `json:"userid"`
+	Score     int    `json:"score"`
+	BitsUsed  int    `json:"bitsused"`
 }

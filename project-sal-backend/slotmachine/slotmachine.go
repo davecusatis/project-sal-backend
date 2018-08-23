@@ -15,6 +15,7 @@ func GenerateRandomScore() models.Score {
 	return models.Score{
 		Score:     num1 + num2 + num3,
 		ChannelID: "RIGdavethecust",
-		UserName:  "davethecust",
+		UserID:    "davethecust",
+		BitsUsed:  0,
 	}
 }
