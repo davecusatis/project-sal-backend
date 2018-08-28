@@ -11,6 +11,10 @@ import (
 	_ "github.com/lib/pq"
 )
 
+const (
+	prod = false
+)
+
 // Datasource is the datasource structs
 type Datasource struct {
 	db         *sql.DB
@@ -42,23 +46,28 @@ func NewDatasource() *Datasource {
 }
 
 func (d *Datasource) LeaderboardForChannelID(channelID string) ([]models.Score, error) {
+	var scores []models.Score
+
 	query := fmt.Sprintf(`
 	SELECT *
 	FROM ChannelScores
-	WHERE channelId = '%s'`,
+	WHERE channelId = '%s';`,
 		channelID)
-
-	var scores []models.Score
 	rows, err := d.db.Query(query)
 	if err != sql.ErrNoRows && err != nil {
 		return nil, err
 	}
+
 	defer rows.Close()
 	for rows.Next() {
-		log.Printf("ROW")
-		var id int
 		var score models.Score
-		err = rows.Scan(&id, &score)
+		err = rows.Scan(
+			&score.ID,
+			&score.Score,
+			&score.RecordedAt,
+			&score.UserID,
+			&score.ChannelID,
+			&score.BitsUsed)
 		if err != nil {
 			return nil, err
 		}

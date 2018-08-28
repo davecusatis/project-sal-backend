@@ -19,9 +19,6 @@ func (a *API) GetScores(w http.ResponseWriter, req *http.Request) {
 	}
 	// s := slotmachine.GenerateRandomScore()
 
-	// 1. Record score
-	// 2. Update clients
-	// 3. message in chat
 	scores, err := a.Datasource.LeaderboardForChannelID(tok.ChannelID)
 	if err != nil {
 		w.Write([]byte(fmt.Sprintf("error %s", err)))

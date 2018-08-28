@@ -14,7 +14,7 @@ func GenerateRandomScore() models.Score {
 	num3 := (rand.Intn(MaxValue) + 1) * 100
 	return models.Score{
 		Score:     num1 + num2 + num3,
-		ChannelID: "RIGdavethecust",
+		ChannelID: "rigdavethecust",
 		UserID:    "davethecust",
 		BitsUsed:  0,
 	}
