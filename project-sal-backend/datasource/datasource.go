@@ -47,7 +47,6 @@ func NewDatasource() *Datasource {
 
 func (d *Datasource) LeaderboardForChannelID(channelID string) ([]models.Score, error) {
 	var scores []models.Score
-
 	query := fmt.Sprintf(`
 	SELECT *
 	FROM ChannelScores
@@ -57,7 +56,6 @@ func (d *Datasource) LeaderboardForChannelID(channelID string) ([]models.Score, 
 	if err != sql.ErrNoRows && err != nil {
 		return nil, err
 	}
-
 	defer rows.Close()
 	for rows.Next() {
 		var score models.Score

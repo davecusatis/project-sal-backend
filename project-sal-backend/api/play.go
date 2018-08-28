@@ -21,10 +21,11 @@ func (a *API) Play(w http.ResponseWriter, req *http.Request) {
 	log.Printf("Got play request")
 	s := slotmachine.GenerateRandomScore()
 
-	// 1. Record score
-	// 2. Update clients
-	// 3. message in chat
-	a.Datasource.RecordScore(s)
+	err = a.Datasource.RecordScore(s)
+	if err != nil {
+		log.Printf("Error logging score %#v: %s", s, err)
+	}
+
 	a.Aggregator.MessageChan <- &models.PubsubMessage{
 		MessageType: "scoreUpdated",
 		Data: models.MessageData{
@@ -32,5 +33,8 @@ func (a *API) Play(w http.ResponseWriter, req *http.Request) {
 		},
 		Token: token.CreateServerToken(tok),
 	}
+
+	//TODO: send message to chat
+
 	w.Write([]byte("OK"))
 }
