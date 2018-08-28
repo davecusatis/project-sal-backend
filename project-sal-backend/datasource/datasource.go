@@ -23,12 +23,12 @@ type Datasource struct {
 
 // NewDatasource returns a new datasource instance
 func NewDatasource() *Datasource {
-	dbHost := "project-sal-db.cm9smw3zpm24.us-west-2.rds.amazonaws.com"
-	dbUser := "dave"
-	dbPassword := ""
-	dbPort := "5432"
-	dbName := "sal"
-	connectionStr := fmt.Sprintf("host= %s user=%s dbname=%s password=%s port=%s sslmode=disable", dbHost, dbUser, dbName, dbPassword, dbPort)
+	dbHost := "localhost"
+	if prod {
+		dbHost = "project-sal-db.cm9smw3zpm24.us-west-2.rds.amazonaws.com"
+	}
+
+	connectionStr := fmt.Sprintf("host=%s user=%s dbname=%s password=%s port=%s sslmode=disable", dbHost, dbUser, dbName, dbPassword, dbPort)
 	db, err := sql.Open("postgres", connectionStr)
 	if err != nil {
 		log.Fatalf("Error creating database connection: %s", err)
