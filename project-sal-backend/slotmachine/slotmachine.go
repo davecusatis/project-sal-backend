@@ -8,14 +8,14 @@ import (
 
 const MaxValue = 8
 
-func GenerateRandomScore() models.Score {
+func GenerateRandomScore(userID, ChannelID string, bits int) models.Score {
 	num1 := (rand.Intn(MaxValue) + 1)
 	num2 := (rand.Intn(MaxValue) + 1) * 10
 	num3 := (rand.Intn(MaxValue) + 1) * 100
 	return models.Score{
 		Score:     num1 + num2 + num3,
-		ChannelID: "rigdavethecust",
-		UserID:    "davethecust",
-		BitsUsed:  0,
+		ChannelID: ChannelID,
+		UserID:    userID,
+		BitsUsed:  bits,
 	}
 }

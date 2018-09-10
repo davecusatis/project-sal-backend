@@ -58,7 +58,7 @@ func GenerateImageFromURLS() {
 	}
 
 	// save new image
-	f, err := os.OpenFile("out.png", os.O_WRONLY|os.O_CREATE, 0600)
+	f, err := os.OpenFile("img/out.png", os.O_WRONLY|os.O_CREATE, 0600)
 	if err != nil {
 		fmt.Printf("Error opening file: %s", err)
 	}

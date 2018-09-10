@@ -5,6 +5,7 @@ import (
 
 	sal "github.com/davecusatis/project-sal-backend/project-sal-backend"
 	"github.com/davecusatis/project-sal-backend/project-sal-backend/api"
+	"github.com/davecusatis/project-sal-backend/project-sal-backend/image"
 )
 
 func main() {
@@ -13,6 +14,6 @@ func main() {
 	if err != nil {
 		log.Fatalf("Could not start server: %s", err)
 	}
-
+	image.GenerateImageFromURLS()
 	server.Start()
 }

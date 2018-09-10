@@ -17,7 +17,6 @@ func (a *API) GetScores(w http.ResponseWriter, req *http.Request) {
 		w.Write([]byte(fmt.Sprintf("error %s", err)))
 		return
 	}
-	// s := slotmachine.GenerateRandomScore()
 
 	scores, err := a.Datasource.LeaderboardForChannelID(tok.ChannelID)
 	if err != nil {
@@ -25,13 +24,6 @@ func (a *API) GetScores(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	log.Printf("Got scores: %#v", scores)
-	// a.Aggregator.MessageChan <- &models.PubsubMessage{
-	// 	MessageType: "scoreUpdated",
-	// 	Data: models.MessageData{
-	// 		Score: s,
-	// 	},
-	// 	Token: token.CreateServerToken(tok),
-	// }
 	out, _ := json.Marshal(scores)
 	w.Write([]byte(out))
 }

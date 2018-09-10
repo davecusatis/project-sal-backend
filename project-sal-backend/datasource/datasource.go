@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/davecusatis/project-sal-backend/project-sal-backend/models"
 
@@ -47,11 +48,14 @@ func NewDatasource() *Datasource {
 
 func (d *Datasource) LeaderboardForChannelID(channelID string) ([]models.Score, error) {
 	var scores []models.Score
+	last24Hrs := time.Now().AddDate(0, 0, -1).UTC().Format(time.RFC3339)
 	query := fmt.Sprintf(`
 	SELECT *
 	FROM ChannelScores
-	WHERE channelId = '%s';`,
-		channelID)
+	WHERE channelId = '%s' AND recordedAt > '%s'
+	LIMIT 100;`,
+		channelID, last24Hrs)
+	log.Printf("QUERY: %s", query)
 	rows, err := d.db.Query(query)
 	if err != sql.ErrNoRows && err != nil {
 		return nil, err
@@ -74,21 +78,29 @@ func (d *Datasource) LeaderboardForChannelID(channelID string) ([]models.Score, 
 	return scores, nil
 }
 
-func (d *Datasource) RecordScore(newScore models.Score) error {
+func (d *Datasource) RecordScore(newScore models.Score) (*models.Score, error) {
 	query := fmt.Sprintf(`
 	INSERT INTO
 	ChannelScores(channelId, userId, score, bitsUsed)
 	VALUES ('%s', '%s', '%d', '%d')
-	RETURNING id`,
+	RETURNING id, recordedAt`,
 		newScore.ChannelID,
 		newScore.UserID,
 		newScore.Score,
 		newScore.BitsUsed)
 
 	var ID string
-	err := d.db.QueryRow(query).Scan(&ID)
+	var recordedAt time.Time
+	err := d.db.QueryRow(query).Scan(&ID, &recordedAt)
 	if err != sql.ErrNoRows && err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return &models.Score{
+		ID:         ID,
+		RecordedAt: recordedAt.String(),
+		ChannelID:  newScore.ChannelID,
+		UserID:     newScore.UserID,
+		Score:      newScore.Score,
+		BitsUsed:   newScore.BitsUsed,
+	}, nil
 }
