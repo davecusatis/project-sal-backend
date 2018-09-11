@@ -5,6 +5,7 @@ import (
 	"image"
 	"image/png"
 	"log"
+	"mime/multipart"
 	"os"
 )
 
@@ -15,6 +16,37 @@ const (
 	newImageWidth     = 128
 	newImageHeight    = 128 * numberOfSubImages
 )
+
+var validImageFormats = []string{"png", "jpeg", "jpg"}
+
+func validateFormat(format string) bool {
+	found := false
+	for _, f := range validImageFormats {
+		if f == format {
+			found = true
+			break
+		}
+	}
+	return found
+}
+
+func ValidateImageFromFile(f *multipart.FileHeader) bool {
+	reader, err := f.Open()
+	if err != nil {
+		log.Printf("Error opening file")
+		return false
+	}
+	defer reader.Close()
+
+	config, format, err := image.Decode(reader)
+	if err != nil {
+		log.Printf("Error decoding %s file: %s", f.Filename, err)
+		return false
+	}
+	x := config.Bounds().Dx()
+	y := config.Bounds().Dy()
+	return (x <= 128 && x > 0) && (y <= 128 && y > 0) && validateFormat(format)
+}
 
 func GenerateImageFromURLS() {
 	// create new image to be written

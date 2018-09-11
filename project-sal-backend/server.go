@@ -27,6 +27,7 @@ func NewServer(api *api.API) (*Server, error) {
 	mux.HandleFunc(pat.Post(apiBase+"/ping"), api.Ping)
 	mux.HandleFunc(pat.Post(apiBase+"/scores"), api.Play)
 	mux.HandleFunc(pat.Get(apiBase+"/scores"), api.GetScores)
+	mux.HandleFunc(pat.Post(apiBase+"/user/:userID/images"), api.PostImages)
 	mux.HandleFunc(pat.Get("/debug/running"), api.HealthCheck)
 	return &Server{
 		Port: "3030",
