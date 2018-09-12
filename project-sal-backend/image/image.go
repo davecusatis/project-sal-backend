@@ -5,7 +5,6 @@ import (
 	"image"
 	"image/png"
 	"log"
-	"mime/multipart"
 	"os"
 )
 
@@ -30,21 +29,9 @@ func validateFormat(format string) bool {
 	return found
 }
 
-func ValidateImageFromFile(f *multipart.FileHeader) bool {
-	reader, err := f.Open()
-	if err != nil {
-		log.Printf("Error opening file")
-		return false
-	}
-	defer reader.Close()
-
-	config, format, err := image.Decode(reader)
-	if err != nil {
-		log.Printf("Error decoding %s file: %s", f.Filename, err)
-		return false
-	}
-	x := config.Bounds().Dx()
-	y := config.Bounds().Dy()
+func ValidateImageFromFile(img image.Image, format string) bool {
+	x := img.Bounds().Dx()
+	y := img.Bounds().Dy()
 	return (x <= 128 && x > 0) && (y <= 128 && y > 0) && validateFormat(format)
 }
 
