@@ -17,6 +17,7 @@ func main() {
 	log.Printf("after s3")
 
 	api, err := api.NewAPI(s3)
+	log.Printf("after api")
 	server, err := sal.NewServer(api)
 	if err != nil {
 		log.Fatalf("Could not start server: %s", err)
