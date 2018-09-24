@@ -12,7 +12,7 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
-const secret = ""
+const secret = "sZ6VwQg1unIHiR79JEYzNBk7zwI5R0CwVRhcrcWN33g="
 
 // ExtractAndValidateTokenFromHeader extracts data and validates it against the secret
 func ExtractAndValidateTokenFromHeader(header http.Header) (*models.TokenData, error) {
