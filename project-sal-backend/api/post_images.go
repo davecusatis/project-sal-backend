@@ -75,7 +75,7 @@ func (a *API) PostImages(w http.ResponseWriter, req *http.Request) {
 			}
 		}
 	}
-
+	log.Printf("IMAGES OK")
 	w.Write([]byte("OK"))
 }
 

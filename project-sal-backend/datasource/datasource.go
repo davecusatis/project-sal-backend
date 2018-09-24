@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	prod = false
+	prod = true
 )
 
 // Datasource is the datasource structs
