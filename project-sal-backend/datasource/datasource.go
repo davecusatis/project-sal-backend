@@ -34,7 +34,7 @@ func NewDatasource() *Datasource {
 	dbPassword := "Pooppy1992"
 	dbPort := "5432"
 	dbName := "sal"
-	connectionStr := fmt.Sprintf("host=%s user=%s dbname=%s password=%s port=%s sslmode=disable", dbHost, dbUser, dbName, dbPassword, dbPort)
+	connectionStr := fmt.Sprintf("host=%s user=%s dbname=%s password=%s port=%s", dbHost, dbUser, dbName, dbPassword, dbPort)
 	db, err := sql.Open("postgres", connectionStr)
 	if err != nil {
 		log.Fatalf("Error creating database connection: %s", err)
