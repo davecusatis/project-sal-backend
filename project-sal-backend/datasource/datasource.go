@@ -27,7 +27,7 @@ func NewDatasource() *Datasource {
 	log.Printf("In new datasource1")
 	dbHost := "localhost"
 	if prod {
-		dbHost = "project-sal-db.cm9smw3zpm24.us-west-2.rds.amazonaws.com"
+		dbHost = "project-sal.cm9smw3zpm24.us-west-2.rds.amazonaws.com"
 	}
 
 	dbUser := "dave"
@@ -40,7 +40,7 @@ func NewDatasource() *Datasource {
 		log.Fatalf("Error creating database connection: %s", err)
 	}
 	log.Printf("In new datasource2")
-	log.Printf(connectionStr)
+	// log.Printf(connectionStr)
 	err = db.Ping()
 	if err != nil {
 		log.Fatalf("Error: Could not establish a connection with the database: %s", err)
