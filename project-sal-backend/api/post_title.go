@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/service/cloudfront"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/davecusatis/project-sal-backend/project-sal-backend/token"
 	"goji.io/pat"
@@ -39,12 +40,29 @@ func (a *API) PostTitle(w http.ResponseWriter, req *http.Request) {
 
 // UploadTextFileToS3 is the helper function that uploads a users slot machine title to s3 bucket
 func (a *API) UploadTextFileToS3(title string, userID string, filename string) error {
+	filepath := fmt.Sprintf("%s/%s", userID, filename)
 	_, err := a.S3.PutObject(&s3.PutObjectInput{
 		Bucket:      aws.String("project-sal-distro"),
-		Key:         aws.String(fmt.Sprintf("%s/%s", userID, filename)),
+		Key:         aws.String(filepath),
 		ContentType: aws.String("text/plain"),
 		ACL:         aws.String("public-read"),
 		Body:        aws.ReadSeekCloser(strings.NewReader(title)),
+	})
+
+	if err != nil {
+		return err
+	}
+
+	_, err = a.CloudFront.CreateInvalidation(&cloudfront.CreateInvalidationInput{
+		DistributionId: aws.String("E12APQ9IM9QY5"),
+		InvalidationBatch: &cloudfront.InvalidationBatch{
+			Paths: &cloudfront.Paths{
+				Items: []*string{
+					aws.String(filepath),
+				},
+				Quantity: aws.Int64(1),
+			},
+		},
 	})
 
 	if err != nil {
