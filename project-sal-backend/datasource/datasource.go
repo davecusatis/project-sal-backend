@@ -40,8 +40,8 @@ func NewDatasource() *Datasource {
 		log.Fatalf("Error creating database connection: %s", err)
 	}
 	log.Printf("In new datasource2")
-	log.Printf(connectionStr)
-	// err = db.Ping()
+	// log.Printf(connectionStr)
+	err = db.Ping()
 	if err != nil {
 		log.Fatalf("Error: Could not establish a connection with the database: %s", err)
 	}
