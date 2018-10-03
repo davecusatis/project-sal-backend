@@ -13,15 +13,17 @@ var (
 
 func init() {
 	validConfigs = map[string]bool{
-		"APP_SECRET":    true,
-		"DISCORD_TOKEN": true,
-		"CHANNEL_ID":    true,
-		"BOT_PORT":      false,
+		"DB_HOST":     true,
+		"DB_USER":     true,
+		"DB_PASSWORD": true,
+		"DB_PORT":     true,
+		"DB_NAME":     true,
 	}
 }
 
 func parseConfig() {
 	configs = make(map[string]string)
+	log.Printf("ENVS: %#v", os.Environ())
 	for _, env := range os.Environ() {
 		e := strings.Split(env, "=")
 		configs[e[0]] = e[1]

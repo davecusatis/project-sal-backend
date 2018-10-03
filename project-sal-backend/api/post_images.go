@@ -75,7 +75,12 @@ func (a *API) PostImages(w http.ResponseWriter, req *http.Request) {
 			}
 		}
 	}
-	log.Printf("IMAGES OK")
+	err = a.UploadOracleToS3(tok.ChannelID)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(fmt.Sprintf("unable to upload images: %s", err)))
+	}
+
 	w.Write([]byte("OK"))
 }
 
@@ -86,6 +91,21 @@ func (a *API) UploadImageToS3(fileBytes *bytes.Reader, userID string, filename s
 		ContentType: aws.String(fmt.Sprintf("image/%s", format)),
 		ACL:         aws.String("public-read"),
 		Body:        fileBytes,
+	})
+
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (a *API) UploadOracleToS3(userID string) error {
+	_, err := a.S3.PutObject(&s3.PutObjectInput{
+		Bucket:      aws.String("project-sal-distro"),
+		Key:         aws.String(fmt.Sprintf("%s/%s", userID, "custom")),
+		ContentType: aws.String(fmt.Sprintf("text/plain")),
+		ACL:         aws.String("public-read"),
+		Body:        bytes.NewReader([]byte("yeah")),
 	})
 
 	if err != nil {

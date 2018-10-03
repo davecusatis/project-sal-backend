@@ -14,6 +14,11 @@ type PubsubMessage struct {
 	Data        MessageData `json:"data"`
 }
 
+type ChatMessage struct {
+	Token   *TokenData
+	Message string `json:"message"`
+}
+
 type TokenData struct {
 	Token        string
 	UserID       string

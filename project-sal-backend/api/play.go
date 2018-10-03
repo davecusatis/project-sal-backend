@@ -19,7 +19,7 @@ func (a *API) Play(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	s := slotmachine.GenerateRandomScore(tok.UserID, tok.ChannelID, 0)
-	score, err := a.Datasource.RecordScore(s)
+	// score, err := a.Datasource.RecordScore(s)
 	if err != nil {
 		log.Printf("Error logging score %#v: %s", s, err)
 	}
@@ -27,12 +27,16 @@ func (a *API) Play(w http.ResponseWriter, req *http.Request) {
 	a.Aggregator.MessageChan <- &models.PubsubMessage{
 		MessageType: "scoreUpdated",
 		Data: models.MessageData{
-			Score: *score,
+			Score: s,
 		},
 		Token: token.CreateServerToken(tok),
 	}
 
-	//TODO: send message to chat
+	userName := a.TwitchClient.GetLogin(tok.UserID)
+	a.Aggregator.ChatMessageChan <- &models.ChatMessage{
+		Message: fmt.Sprintf("%s just rolled %d!", userName, s.Score),
+		Token:   token.CreateServerToken(tok),
+	}
 
 	w.Write([]byte("OK"))
 }
