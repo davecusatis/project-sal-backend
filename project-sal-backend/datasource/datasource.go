@@ -30,7 +30,7 @@ func NewDatasource() *Datasource {
 	}
 
 	dbUser := "dave"
-	dbPassword := "Pooppy1992"
+	dbPassword := ""
 	dbPort := "5432"
 	dbName := "sal"
 	connectionStr := fmt.Sprintf("host=%s user=%s dbname=%s password=%s port=%s", dbHost, dbUser, dbName, dbPassword, dbPort)
