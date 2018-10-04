@@ -16,10 +16,10 @@ func (a *API) Ping(w http.ResponseWriter, req *http.Request) {
 		w.Write([]byte(fmt.Sprintf("error %s", err)))
 		return
 	}
-	a.Aggregator.MessageChan <- &models.PubsubMessage{
+	a.Aggregator.QueuePubsubMessage(tok.ChannelID, &models.PubsubMessage{
 		MessageType: "ping",
 		Data:        models.MessageData{},
 		Token:       token.CreateServerToken(tok),
-	}
+	})
 	w.Write([]byte("OK"))
 }

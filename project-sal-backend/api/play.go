@@ -24,19 +24,19 @@ func (a *API) Play(w http.ResponseWriter, req *http.Request) {
 		log.Printf("Error logging score %#v: %s", s, err)
 	}
 
-	a.Aggregator.MessageChan <- &models.PubsubMessage{
+	a.Aggregator.QueuePubsubMessage(tok.ChannelID, &models.PubsubMessage{
 		MessageType: "scoreUpdated",
 		Data: models.MessageData{
 			Score: s,
 		},
 		Token: token.CreateServerToken(tok),
-	}
+	})
 
 	userName := a.TwitchClient.GetLogin(tok.UserID)
-	a.Aggregator.ChatMessageChan <- &models.ChatMessage{
+	a.Aggregator.QueueChatMessage(tok.ChannelID, &models.ChatMessage{
 		Message: fmt.Sprintf("%s just rolled %d!", userName, s.Score),
 		Token:   token.CreateServerToken(tok),
-	}
+	})
 
 	w.Write([]byte("OK"))
 }

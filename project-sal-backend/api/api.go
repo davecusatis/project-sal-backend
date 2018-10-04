@@ -22,7 +22,6 @@ type API struct {
 // NewAPI creates a new instance of an API
 func NewAPI(s *s3.S3, cf *cloudfront.CloudFront) (*API, error) {
 	a := aggregator.NewAggregator()
-	a.Start()
 	return &API{
 		Aggregator:   a,
 		Datasource:   datasource.NewDatasource(),

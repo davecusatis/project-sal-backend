@@ -1,7 +1,6 @@
 package aggregator
 
 import (
-	"log"
 	"net/http"
 	"time"
 
@@ -9,49 +8,49 @@ import (
 	"github.com/davecusatis/project-sal-backend/project-sal-backend/models"
 )
 
-// Aggregator is a message aggregator as to not eat through pubsub rate limits
+// Aggregator is the struct that contains a map of message senders to rate limit messages on a per channel basis
 type Aggregator struct {
-	MessageChan     chan *models.PubsubMessage
-	ChatMessageChan chan *models.ChatMessage
-	PubsubTicker    *time.Ticker
-	ChatTicker      *time.Ticker
-	Pubsub          *messages.PubsubClient
+	AggregatorMap map[string]*GenericMessageSender
+	MessageClient *messages.PubsubClient
 }
 
 // NewAggregator returns an instance of aggregator
 func NewAggregator() *Aggregator {
-	ps := messages.NewPubsubClient(&http.Client{})
+	messageClient := messages.NewPubsubClient(&http.Client{})
 
 	return &Aggregator{
+		AggregatorMap: make(map[string]*GenericMessageSender),
+		MessageClient: messageClient,
+	}
+}
+
+// NewGenericMessageSender creates a new GMS and attaches it to the aggregator
+func (a *Aggregator) NewGenericMessageSender(channelID string) {
+	a.AggregatorMap[channelID] = &GenericMessageSender{
 		MessageChan:     make(chan *models.PubsubMessage),
 		ChatMessageChan: make(chan *models.ChatMessage),
 		PubsubTicker:    time.NewTicker(1 * time.Second),
 		ChatTicker:      time.NewTicker(15 * time.Second),
-		Pubsub:          ps,
 	}
+	a.AggregatorMap[channelID].Start(a.MessageClient)
 }
 
-// Start begins the loop that aggregates and sends messages
-func (a *Aggregator) Start() {
-	go func() {
-		for {
-			select {
-			case <-a.PubsubTicker.C:
-				msg := <-a.MessageChan
-				log.Printf("Sending message: %v", msg)
-				a.Pubsub.SendPubsubBroadcastMessage(msg)
-			}
-		}
-	}()
+// QueuePubsubMessage queues up the pubsub message to be send in a specific channel
+func (a *Aggregator) QueuePubsubMessage(channelID string, msg *models.PubsubMessage) {
+	if gms, ok := a.AggregatorMap[channelID]; ok {
+		gms.MessageChan <- msg
+		return
+	}
+	a.NewGenericMessageSender(channelID)
+	a.AggregatorMap[channelID].MessageChan <- msg
+}
 
-	go func() {
-		for {
-			select {
-			case <-a.ChatTicker.C:
-				msg := <-a.ChatMessageChan
-				log.Printf("Sending chat message: %v", msg)
-				a.Pubsub.SendExtensionChatMessage(msg)
-			}
-		}
-	}()
+// QueueChatMessage queues up the chat message to be send in a specific channel
+func (a *Aggregator) QueueChatMessage(channelID string, msg *models.ChatMessage) {
+	if gms, ok := a.AggregatorMap[channelID]; ok {
+		gms.ChatMessageChan <- msg
+		return
+	}
+	a.NewGenericMessageSender(channelID)
+	a.AggregatorMap[channelID].ChatMessageChan <- msg
 }
