@@ -2,8 +2,6 @@ package api
 
 import (
 	"fmt"
-	_ "image/jpeg"
-	_ "image/png"
 	"net/http"
 	"strings"
 

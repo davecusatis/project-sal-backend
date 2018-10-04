@@ -8,7 +8,7 @@ import (
 	"github.com/davecusatis/project-sal-backend/project-sal-backend/token"
 )
 
-// Ping is the health check endpoint
+// Ping is the fist request every client makes, which updates all other clients
 func (a *API) Ping(w http.ResponseWriter, req *http.Request) {
 	// validate token
 	tok, err := token.ExtractAndValidateTokenFromHeader(req.Header)

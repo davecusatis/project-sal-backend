@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"image"
+	// importing the Fucken Formats leave me alone go linter
 	_ "image/jpeg"
 	_ "image/png"
 	"log"
@@ -84,6 +85,7 @@ func (a *API) PostImages(w http.ResponseWriter, req *http.Request) {
 	w.Write([]byte("OK"))
 }
 
+// UploadImageToS3 uploads the images to s3
 func (a *API) UploadImageToS3(fileBytes *bytes.Reader, userID string, filename string, format string) error {
 	_, err := a.S3.PutObject(&s3.PutObjectInput{
 		Bucket:      aws.String("project-sal-distro"),
@@ -99,6 +101,7 @@ func (a *API) UploadImageToS3(fileBytes *bytes.Reader, userID string, filename s
 	return nil
 }
 
+// UploadOracleToS3 uploads the oracle file, won't be needed soon
 func (a *API) UploadOracleToS3(userID string) error {
 	_, err := a.S3.PutObject(&s3.PutObjectInput{
 		Bucket:      aws.String("project-sal-distro"),

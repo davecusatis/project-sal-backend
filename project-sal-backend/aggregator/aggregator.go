@@ -8,6 +8,11 @@ import (
 	"github.com/davecusatis/project-sal-backend/project-sal-backend/models"
 )
 
+var (
+	pubsubRateLimit = 1 * time.Second
+	chatRateLimit   = 15 * time.Second
+)
+
 // Aggregator is the struct that contains a map of message senders to rate limit messages on a per channel basis
 type Aggregator struct {
 	AggregatorMap map[string]*GenericMessageSender
@@ -16,11 +21,10 @@ type Aggregator struct {
 
 // NewAggregator returns an instance of aggregator
 func NewAggregator() *Aggregator {
-	messageClient := messages.NewPubsubClient(&http.Client{})
-
+	// TODO: tune the client
 	return &Aggregator{
 		AggregatorMap: make(map[string]*GenericMessageSender),
-		MessageClient: messageClient,
+		MessageClient: messages.NewPubsubClient(&http.Client{}),
 	}
 }
 
@@ -29,8 +33,8 @@ func (a *Aggregator) NewGenericMessageSender(channelID string) {
 	a.AggregatorMap[channelID] = &GenericMessageSender{
 		MessageChan:     make(chan *models.PubsubMessage),
 		ChatMessageChan: make(chan *models.ChatMessage),
-		PubsubTicker:    time.NewTicker(1 * time.Second),
-		ChatTicker:      time.NewTicker(15 * time.Second),
+		PubsubTicker:    time.NewTicker(pubsubRateLimit),
+		ChatTicker:      time.NewTicker(chatRateLimit),
 	}
 	a.AggregatorMap[channelID].Start(a.MessageClient)
 }

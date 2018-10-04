@@ -10,7 +10,7 @@ import (
 	"github.com/davecusatis/project-sal-backend/project-sal-backend/twitch"
 )
 
-// API struct
+// API struct for the API
 type API struct {
 	Aggregator   *aggregator.Aggregator
 	Datasource   *datasource.Datasource
